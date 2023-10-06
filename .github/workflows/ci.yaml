@@ -1,0 +1,80 @@
+name: Default workflows
+on:
+  push:
+    branches:
+      - "main"
+      - "init"
+      - "release*"
+  pull_request:
+
+jobs:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    #    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/release')
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+      - uses: actions/checkout@v3
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.49.0
+          args: --timeout=5m
+          skip-pkg-cache: true
+          skip-build-cache: true
+  go-test:
+    runs-on: ubuntu-latest
+    #    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/release')
+    #    services:
+    #      redis:
+    #        image: bitnami/redis:latest
+    #        env:
+    #          ALLOW_EMPTY_PASSWORD: yes
+    #        ports:
+    #          - 36379:6379
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+      - name: Run unit tests
+        env:
+          TESTCOVERAGE_THRESHOLD: 50
+        run: |
+          echo "Running test..."
+          go test -p 1 -v -coverpkg=./... -coverprofile=profile.cov ./... | tee test.log
+          sed -i '/^go-template\/cmd\/app\/main.go/ d' profile.cov
+          go tool cover -func profile.cov
+
+          echo "------------------"
+
+          fail=`grep "FAIL:" test.log` || true
+          echo "$fail"
+          if [ -z "$fail" ]; then
+            pass=`grep "PASS:" test.log` || true
+            echo "$pass"
+            echo "--- ALL TESTCASES PASSED"
+          else
+            echo "--- SOME TESTCASES FAILED"
+          fi
+
+          echo "Threshold: $TESTCOVERAGE_THRESHOLD%"
+          totalCoverage=`go tool cover -func=profile.cov | grep total | grep -Eo '[0-9]+\.[0-9]+'`
+          echo "Current test coverage: $totalCoverage%"
+          if (( $(echo "$totalCoverage $TESTCOVERAGE_THRESHOLD" | awk '{print ($1 > $2)}') )); then
+            echo "OK"
+            exit 0
+          else
+            echo "Current test coverage is below threshold. Please add more unit tests."
+            echo "Exit 1"
+            exit 1
+          fi
+  call-workflow:
+    uses: go-equitize/workflows-templates/.github/workflows/docker.yml@main
+    with:
+      IMAGE_REPOSITORY: asia.gcr.io/go-equitize/core/go-template
+    secrets:
+      GCR_CREDENTIALS: ${{ secrets.GCR_CREDENTIALS }}
