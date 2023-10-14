@@ -1,7 +1,7 @@
 package logger
 
 import (
-	gocontext "context"
+	"context"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -13,12 +13,12 @@ import (
 var logger *zap.Logger
 
 func InitLogger() error {
-	commonCfg := config.Instance().Common
 	if logger != nil {
 		return nil
 	}
 
-	logLevel := commonCfg.LogLevel
+	logLevel := config.Instance().Common.LogLevel
+
 	cfg := zap.Config{
 		Level:       zap.NewAtomicLevelAt(zapcore.Level(logLevel)),
 		Development: false,
@@ -53,42 +53,59 @@ func InitLogger() error {
 	return nil
 }
 
-func fromCtx(ctx gocontext.Context) *zap.Logger {
+func fromCtx(ctx context.Context) *zap.Logger {
 	l := ctx.Value(constant.CtxLoggerKey)
+	if l == nil {
+		l = ctx.Value(ctxLoggerKey(constant.CtxLoggerKey))
+	}
 	if l == nil {
 		return logger
 	}
-	return l.(*zap.Logger)
+	zlogger, ok := l.(*zap.Logger)
+	if !ok {
+		return logger
+	}
+	return zlogger
 }
 
-func Error(ctx gocontext.Context, args ...interface{}) {
+func Error(ctx context.Context, args ...interface{}) {
 	l := fromCtx(ctx)
 	l.Sugar().Error(args...)
 }
 
-func Errorf(ctx gocontext.Context, format string, args ...interface{}) {
+func Errorf(ctx context.Context, format string, args ...interface{}) {
 	l := fromCtx(ctx)
 	l.Sugar().Errorf(format, args...)
 }
 
-func Info(ctx gocontext.Context, args ...interface{}) {
+func Info(ctx context.Context, args ...interface{}) {
 	l := fromCtx(ctx)
 	l.Sugar().Info(args...)
 }
 
-func Infof(ctx gocontext.Context, format string, args ...interface{}) {
+func Infof(ctx context.Context, format string, args ...interface{}) {
 	l := fromCtx(ctx)
 	l.Sugar().Infof(format, args...)
 }
 
-func Warn(ctx gocontext.Context, args ...interface{}) {
+func Warn(ctx context.Context, args ...interface{}) {
 	l := fromCtx(ctx)
 	l.Sugar().Warn(args...)
 }
 
-func Warnf(ctx gocontext.Context, format string, args ...interface{}) {
+func Warnf(ctx context.Context, format string, args ...interface{}) {
 	l := fromCtx(ctx)
 	l.Sugar().Warnf(format, args...)
+}
+
+func Debug(ctx context.Context, args ...interface{}) {
+	l := fromCtx(ctx)
+	l.Sugar().Debug(args...)
+}
+
+func Debugf(ctx context.Context, format string, args ...interface{}) {
+	l := fromCtx(ctx)
+	l.Sugar().Debugf(format, args...)
 }
 
 func L() *zap.Logger {

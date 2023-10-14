@@ -1,4 +1,4 @@
-# Mac OS X files
+# Mac OS X file
 .DS_Store
 
 # Binaries for programs and plugins
@@ -17,6 +17,7 @@
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 .idea/
+/vendor/
 
 # Dependency directories (remove the comment below to include it)
 # vendor/

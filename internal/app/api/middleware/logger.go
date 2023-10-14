@@ -1,4 +1,4 @@
-package middlewares
+package middleware
 
 import (
 	"strings"
@@ -8,12 +8,12 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"go-template/internal/pkg/constant"
-	"go-template/internal/pkg/utils/logger"
+	"go-template/internal/pkg/util/logger"
 )
 
 func buildLogFields(c *gin.Context) (zapcore.Field, zapcore.Field) {
-	requestIDField := zapcore.Field{
-		Key:    constant.CtxRequestIDKey,
+	traceIDField := zapcore.Field{
+		Key:    constant.CtxTraceIDKey,
 		Type:   zapcore.StringType,
 		String: uuid.New().String(),
 	}
@@ -32,7 +32,7 @@ func buildLogFields(c *gin.Context) (zapcore.Field, zapcore.Field) {
 		Type:   zapcore.StringType,
 		String: builder.String(),
 	}
-	return requestIDField, apiField
+	return traceIDField, apiField
 }
 
 // Logger add a logger to gin context with metadata like requestID, etc.
@@ -42,7 +42,7 @@ func Logger() gin.HandlerFunc {
 		l := logger.L().With(requestIDField).With(apiField)
 
 		c.Set(constant.CtxLoggerKey, l)
-		c.Set(constant.CtxRequestIDKey, requestIDField.String)
+		c.Set(constant.CtxTraceIDKey, requestIDField.String)
 
 		// Process request
 		c.Next()

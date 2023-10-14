@@ -8,6 +8,12 @@ type HttpConfig struct {
 
 type CommonConfig struct {
 	LogLevel int8
+
+	// HTTP Client
+
+	HttpClientRetryCount              int `default:"3"`
+	HttpClientRetryWaitTimeSeconds    int `default:"5"`
+	HttpClientRetryMaxWaitTimeSeconds int `default:"30"`
 }
 
 type RedisConfig struct {
