@@ -1,0 +1,9 @@
+http:
+  bindAddress: :8013
+  mode: debug #(debugreleasetest)
+redis:
+  RedisAddresses: :6379
+  Password:
+  MasterName:
+common:
+  LogLevel: -1 #debug

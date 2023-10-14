@@ -1,6 +1,6 @@
-package components
+package component
 
-import "go-template/internal/pkg/utils/logger"
+import "go-template/internal/pkg/util/logger"
 
 func InitComponents() error {
 	var err error

@@ -1,4 +1,4 @@
-package middlewares
+package middleware
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ import (
 
 	"go-template/internal/pkg/config"
 	"go-template/internal/pkg/constant"
-	"go-template/internal/pkg/utils/logger"
+	"go-template/internal/pkg/util/logger"
 )
 
 func TestBuildLogFields(t *testing.T) {
@@ -26,7 +26,7 @@ func TestBuildLogFields(t *testing.T) {
 
 	requestIdField, apiField := buildLogFields(ctx)
 	assert.NotNil(t, requestIdField)
-	assert.EqualValues(t, constant.CtxRequestIDKey, requestIdField.Key)
+	assert.EqualValues(t, constant.CtxTraceIDKey, requestIdField.Key)
 	assert.EqualValues(t, zapcore.StringType, requestIdField.Type)
 	assert.NotEqual(t, "", requestIdField.String)
 	assert.EqualValues(t, constant.CtxAPIRequestKey, apiField.Key)
@@ -44,7 +44,7 @@ func TestLoggerMiddleWare(t *testing.T) {
 	ctx.Request.URL.Path = "/api/v1/tokens"
 	ctx.Request.URL.RawQuery = "chainId=1"
 
-	err := config.Load("../configs/files/test.yaml")
+	err := config.Load("../../pkg/config/file/test.yaml")
 	if err != nil {
 		panic(err)
 	}
