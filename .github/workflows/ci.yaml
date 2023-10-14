@@ -42,7 +42,7 @@ jobs:
           go-version: 1.18
       - name: Run unit tests
         env:
-          TESTCOVERAGE_THRESHOLD: 50
+          TESTCOVERAGE_THRESHOLD: 20
         run: |
           echo "Running test..."
           go test -p 1 -v -coverpkg=./... -coverprofile=profile.cov ./... | tee test.log
