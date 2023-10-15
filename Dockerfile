@@ -16,7 +16,7 @@ RUN go mod vendor
 FROM golang:1.21 as build
 WORKDIR /build
 COPY --from=dep /build .
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -o server -tags nethttpomithttp2 ./cmd/app
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -o server -tags nethttpomithttp2 ./cmd
 
 # Minimal image
 FROM alpine:latest
