@@ -28,9 +28,9 @@ func InitClient() error {
 
 		if _, err := redisClient.Ping(gocontext.Background()).Result(); err != nil {
 			return goerror.NewInfraErrorRedisConnect(err)
-		} else {
-			fmt.Println("Successfully connect to Redis")
 		}
+
+		fmt.Println("Successfully connect to Redis.")
 	}
 	return nil
 }

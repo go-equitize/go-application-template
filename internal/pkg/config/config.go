@@ -12,8 +12,9 @@ import (
 )
 
 type Config struct {
-	Http   HttpConfig
 	Common CommonConfig
+	DB     DBConfig
+	Http   HttpConfig
 	Redis  RedisConfig
 }
 
