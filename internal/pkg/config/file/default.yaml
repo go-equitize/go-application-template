@@ -4,7 +4,7 @@ http:
 db:
   Host: localhost
   Port: 3306
-  DBName: notification_service
+  DBName: go_template
   User: root
   Password: 123456
   ConnLifeTime: 300
