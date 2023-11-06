@@ -29,6 +29,7 @@ func newEngine() *gin.Engine {
 func setCORS(engine *gin.Engine) {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AddAllowMethods(http.MethodOptions)
+	corsConfig.AddAllowHeaders("*")
 	corsConfig.AllowAllOrigins = true
 	engine.Use(cors.New(corsConfig))
 }
