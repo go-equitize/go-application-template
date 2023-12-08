@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	"github.com/urfave/cli/v2"
+
 	"go-template/cmd/app"
 )
 
@@ -14,6 +15,7 @@ func main() {
 		Name: "Your application name",
 		Commands: []*cli.Command{
 			app.APIServerCommand(),
+			app.MigrationCommand(),
 		},
 	}
 	err := cmd.Run(os.Args)
