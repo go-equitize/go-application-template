@@ -13,6 +13,7 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    environment: production
     outputs:
       version_tag: ${{ steps.version_tag.outputs.value }}
       build_date: ${{ steps.build_date.outputs.value }}
@@ -38,6 +39,7 @@ jobs:
       VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
       BUILD_DATE: ${{ needs.prepare.outputs.build_date }}
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -72,13 +74,13 @@ jobs:
             GIT_HASH=${{ github.sha }}
             BUILD_DATE=${{ env.BUILD_DATE }}
           labels: |
-            kyber.network.schema-version=1.0
-            kyber.network.vcs-ref=${{ github.sha }}
-            kyber.network.version=${{ env.VERSION_TAG }}
-            kyber.network.name=${{ env.SERVICE }}
+            goequitize.com.schema-version=1.0
+            goequitize.com.vcs-ref=${{ github.sha }}
+            goequitize.com.version=${{ env.VERSION_TAG }}
+            goequitize.com.name=${{ env.SERVICE }}
           tags: |
-            asia.gcr.io/kyber-operation/core/${{ env.SERVICE }}:latest
-            asia.gcr.io/kyber-operation/core/${{ env.SERVICE }}:${{ env.VERSION_TAG }}
+            asia.gcr.io/equitize-prod/core/${{ env.SERVICE }}:latest
+            asia.gcr.io/equitize-prod/core/${{ env.SERVICE }}:${{ env.VERSION_TAG }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -92,6 +94,7 @@ jobs:
       - prepare
       - docker
     runs-on: ubuntu-latest
+    environment: production
     env:
       VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
     steps:
@@ -122,4 +125,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ env.VERSION_TAG }}
           prerelease: false
-          name: "KS Meta Aggregator ${{ env.VERSION_TAG }}"
+          name: "Equitize Go Template ${{ env.VERSION_TAG }}"
