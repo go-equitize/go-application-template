@@ -39,6 +39,7 @@ jobs:
       VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
       BUILD_DATE: ${{ needs.prepare.outputs.build_date }}
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -93,6 +94,7 @@ jobs:
       - prepare
       - docker
     runs-on: ubuntu-latest
+    environment: production
     env:
       VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
     steps:
